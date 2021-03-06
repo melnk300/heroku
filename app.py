@@ -1,4 +1,5 @@
 from data.Users import User
+from data.Jobs import Job
 
 from data import db_session
 
@@ -18,6 +19,12 @@ def add_user(surname, name, age, position, speciality, address, email):
     db_sess.add(user)
     db_sess.commit()
 
+def add_job(team_leader, job, work_size, collaborators, is_finished):
+    job_ = Job()
+    job.team_leader = team_leader
+    job.work_size = work_size
+    job.collaborators = collaborators
+    job.is_finished = is_finished
 
 users = [
     {
@@ -58,4 +65,13 @@ users = [
     }
 ]
 
-[add_user(*user.values()) for user in users]
+jobs = [{
+    'team_leader': 1,
+    'job': 'deployment of residential modules 1 and 2',
+    'work_size': '15',
+    'collaborators': '2, 3',
+    'is_finished': False,
+}]
+
+# [add_user(*user.values()) for user in users]
+[add_job(*job.values()) for job in jobs]
