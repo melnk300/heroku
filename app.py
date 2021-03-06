@@ -22,6 +22,7 @@ def add_user(surname, name, age, position, speciality, address, email):
 def add_job(team_leader, job, work_size, collaborators, is_finished):
     job_ = Job()
     job_.team_leader = team_leader
+    job_.job = job
     job_.work_size = work_size
     job_.collaborators = collaborators
     job_.is_finished = is_finished
@@ -59,5 +60,5 @@ jobs = [{
     'is_finished': False,
 }]
 
-[add_user(*user.values()) for user in users]
-# [add_job(*job__.values()) for job__ in jobs]
+# [add_user(*user.values()) for user in users]
+[add_job(*job__.values()) for job__ in jobs]
