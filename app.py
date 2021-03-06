@@ -25,6 +25,9 @@ def add_job(team_leader, job, work_size, collaborators, is_finished):
     job.work_size = work_size
     job.collaborators = collaborators
     job.is_finished = is_finished
+    db_sess = db_session.create_session()
+    db_sess.add(user)
+    db_sess.commit()
 
 users = [
     {
