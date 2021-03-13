@@ -1,0 +1,10 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "t",
+            "database": "C:\\Users\\Yandex Liceum 2\\PycharmProjects\\pythonProject\\db\\mars_explorer.db"
+        }
+    ]
+}
