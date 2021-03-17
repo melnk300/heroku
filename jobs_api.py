@@ -1,7 +1,7 @@
 from flask import Blueprint, Flask, jsonify, request, make_response
 
 from data import db_session
-from data.Jobs import Jobs
+from data.Jobs import Job
 
 blueprint = Blueprint(
     'jobs_api',
@@ -33,7 +33,7 @@ def add_job():
 @blueprint.route('/api/jobs/<int:job_id>', methods=['GET'])
 def get_jobs_by_id(job_id):
     ds = db_session.create_session()
-    jobs = ds.query(Jobs).filter(Jobs.id == job_id)
+    jobs = ds.query(Job).filter(Job.id == job_id)
     print([job for job in jobs])
     return jsonify([job.to_dict() for job in jobs]) if [job for job in jobs] else 'Id is invalid', 400
     
