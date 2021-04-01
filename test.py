@@ -1,5 +1,1 @@
-import pytest
-from pytest import raises as r
-
-def test_all():
-    assert 
+print(b'qFHY8CvumgtmGLcoxGUkM2zPQf-hteFMX-s8RV9TOT0='.decode().encode())
