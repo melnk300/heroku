@@ -1,26 +1,86 @@
-import flask
-from flask import jsonify, abort
+from flask import jsonify, abort, request, Blueprint
+from flask_jwt import JWT, jwt_required, current_identity
+from flask_jwt_extended import JWTManager
+
 from pprint import pprint
+
+from utils.utils import hash_password, check_password
 
 from data import db_session
 from data.models.Users import User
+from data.models.Groups import Group
 
-blueprint = flask.Blueprint(
-    'users_api',
-    __name__,
-)
+blueprint = Blueprint('users_api', __name__)
 
 
-@blueprint.route('/api/users')
-def get_all_users():
+def if_group_not_found(group_id):
     sess = db_session.create_session()
-    users = sess.query(User).all()
-    return jsonify([user.to_dict() for user in users])
+    group = sess.query(Group).get(group_id)
+    if not group:
+        abort(404, message='Group id not found')
 
 
-@blueprint.route('/api/users<user_id>')
-def get_user_by_id(user_id):
+def if_user_not_found_by_id(user_id):
     sess = db_session.create_session()
-    users = sess.query(User).all()
-    return jsonify([user.to_dict() for user in users])
+    user = sess.query(User).get(user_id)
+    if not user:
+        abort(404, message='User id not found')
 
+
+def if_user_not_found_by_name(user_name):
+    sess = db_session.create_session()
+    user = sess.query(User).filter(User.login == user_name).all()
+    if not user:
+        abort(404, message='User name not found')
+
+
+def if_user_already_created(user_name):
+    sess = db_session.create_session()
+    user = sess.query(User).filter(User.login == user_name).all()
+    if user:
+        abort(403, 'User already created')
+
+
+@blueprint.route('/api/users/<group_id>', methods=['GET'])
+def users_by_group(group_id):
+    if_group_not_found(group_id)
+    sess = db_session.create_session()
+    users = sess.query(User.id, User.login, Group.name).filter(User.group_id == group_id).join(Group,
+                                                                                               Group.id == group_id).all()
+    users = [{'id': user[0], 'name': user[1], 'group_name': user[2]} for user in users]
+    return jsonify({'users': users}), 200
+
+
+@blueprint.route('/api/user/<user_id>', methods=['GET'])
+def user_by_id(user_id):
+    if_user_not_found_by_id(user_id)
+    sess = db_session.create_session()
+    user = sess.query(User.id, User.login, Group.id, Group.name).filter(User.id == user_id).join(Group,
+                                                                                                 Group.id == User.group_id).one()
+    return jsonify({'id': user[0], 'login': user[1], 'group_id': user[2], 'group_name': user[3]}), 200
+
+
+@blueprint.route('/api/user/', methods=['POST'])
+def register_user():
+    req = request.get_json(force=True)
+    if_user_already_created(req['login'])
+    sess = db_session.create_session()
+    user = User(
+        login=req['login'],
+        password=hash_password(req['password'])
+    )
+    sess.add(user)
+    sess.commit()
+    return jsonify({'success': 'OK'}), 200
+
+
+@blueprint.route('/api/user/', methods=['GET'])
+def login_user():
+    req = request.get_json(force=True)
+    if_user_not_found_by_name(req['login'])
+    sess = db_session.create_session()
+    user = sess.query(User.id, User.password).filter(User.login == req['login']).all()[0]
+    if check_password(req['login'], user[1]):
+        return jsonify({'id': user}), 200
+    else:
+        abort()
