@@ -34,6 +34,13 @@ def if_user_not_found_by_name(user_name):
         abort(404, 'User name not found')
 
 
+def if_user_not_found_by_group(user_group_id):
+    sess = db_session.create_session()
+    user = sess.query(User).filter(User.group_id == user_group_id).all()
+    if not user:
+        abort(404, 'User with this group_id name not found')
+
+
 def if_user_already_created(user_name):
     sess = db_session.create_session()
     user = sess.query(User).filter(User.login == user_name).all()
@@ -44,9 +51,11 @@ def if_user_already_created(user_name):
 @blueprint.route('/api/users/<group_id>', methods=['GET'])
 def users_by_group(group_id):
     if_group_not_found(group_id)
+    if_user_not_found_by_group(group_id)
     sess = db_session.create_session()
     users = sess.query(User.id, User.login, Group.name).filter(User.group_id == group_id).join(Group,
                                                                                                Group.id == group_id).all()
+    print(users)
     users = [{'id': user[0], 'name': user[1], 'group_name': user[2]} for user in users]
     return jsonify({'users': users}), 200
 
@@ -56,7 +65,8 @@ def user_by_id(user_id):
     if_user_not_found_by_id(user_id)
     sess = db_session.create_session()
     user = sess.query(User.id, User.login, Group.id, Group.name).filter(User.id == user_id).join(Group,
-                                                                                                 Group.id == User.group_id).one()
+                                                                                                 Group.id == User.group_id).first()
+    print(user)
     return jsonify({'id': user[0], 'login': user[1], 'group_id': user[2], 'group_name': user[3]}), 200
 
 
@@ -67,7 +77,7 @@ def register_user():
     sess = db_session.create_session()
     user = User(
         login=req['login'],
-        password=hash_password(req['password'].decode())
+        password=hash_password(req['password'])
     )
     sess.add(user)
     sess.commit()
