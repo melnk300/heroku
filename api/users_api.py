@@ -17,21 +17,21 @@ def if_group_not_found(group_id):
     sess = db_session.create_session()
     group = sess.query(Group).get(group_id)
     if not group:
-        abort(404, message='Group id not found')
+        abort(404, 'Group id not found')
 
 
 def if_user_not_found_by_id(user_id):
     sess = db_session.create_session()
     user = sess.query(User).get(user_id)
     if not user:
-        abort(404, message='User id not found')
+        abort(404, 'User id not found')
 
 
 def if_user_not_found_by_name(user_name):
     sess = db_session.create_session()
     user = sess.query(User).filter(User.login == user_name).all()
     if not user:
-        abort(404, message='User name not found')
+        abort(404, 'User name not found')
 
 
 def if_user_already_created(user_name):
@@ -67,7 +67,7 @@ def register_user():
     sess = db_session.create_session()
     user = User(
         login=req['login'],
-        password=hash_password(req['password'])
+        password=hash_password(req['password'].decode())
     )
     sess.add(user)
     sess.commit()
@@ -80,7 +80,7 @@ def login_user():
     if_user_not_found_by_name(req['login'])
     sess = db_session.create_session()
     user = sess.query(User.id, User.password).filter(User.login == req['login']).all()[0]
-    if check_password(req['login'], user[1]):
-        return jsonify({'id': user}), 200
+    if check_password(req['password'], user[1]):
+        return jsonify({'id': user[0]}), 200
     else:
-        abort()
+        abort(401, 'Password - login pair is incorrect')
