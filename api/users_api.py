@@ -81,7 +81,8 @@ def register_user():
     )
     sess.add(user)
     sess.commit()
-    return jsonify({'success': 'OK'}), 200
+    user_id = sess.query(User.id).filter(User.login == req['login']).first()
+    return jsonify({'success': 'OK', "id": user_id[0]}), 200
 
 
 @blueprint.route('/api/user/', methods=['GET'])
