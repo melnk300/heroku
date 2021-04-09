@@ -1,16 +1,29 @@
-from flask import jsonify, abort, request, Blueprint
-from flask_jwt import JWT, jwt_required, current_identity
-from flask_jwt_extended import JWTManager
-
-from pprint import pprint
-
-from utils.utils import hash_password, check_password
+from flask import jsonify, request, Blueprint
 
 from data import db_session
-from data.models.Users import User
-from data.models.Groups import Group
+from data.models.Tasks import Task
 
-blueprint = Blueprint('users_api', __name__)
+blueprint = Blueprint('tasks_api', __name__)
+
 
 @blueprint.route('/api/tasks/<group_id>', methods=['GET'])
-def tasks_by_group(group_id):
+def get_tasks_by_group(group_id):
+    pass
+
+
+@blueprint.route('/api/tasks/<group_id>/<data>', methods=['POST'])
+def add_tasks_by_group(data, group_id):
+    req = request.get_json(force=True)  # subject: 'русский', task: '№434', author: ...
+    sess = db_session.create_session()
+    task = Task(
+        group_id=group_id,
+        date_task=data,
+        author=req['author'],
+        subject=req['subject'],
+        task=req['task']
+    )
+    sess.add(task)
+    sess.commit()
+    return jsonify({'success': 'OK'}), 200
+
+
