@@ -19,4 +19,9 @@ def if_group_not_found(group_id):
     if not group:
         abort(404, 'Group id not found')
 
-def
+
+@blueprint.route('/api/group/<login>', methods=['GET'])
+def get_group(login):
+    sess = db_session.create_session()
+    sess.query(Group).filter(Group.name == login).first()
+    return jsonify({'group': Group.name}), 200
