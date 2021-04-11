@@ -1,6 +1,4 @@
 from flask import jsonify, abort, request, Blueprint
-from flask_jwt import JWT, jwt_required, current_identity
-from flask_jwt_extended import JWTManager
 
 from pprint import pprint
 
