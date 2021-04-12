@@ -12,3 +12,4 @@ class Group(SqlAlchemyBase, SerializerMixin):  # название модели
                            primary_key=True, autoincrement=True)  # поля таблицы
     name = sqlalchemy.Column(sqlalchemy.Text)
     members = sqlalchemy.Column(sqlalchemy.ARRAY(sqlalchemy.Integer))
+    admin = sqlalchemy.Column(sqlalchemy.Integer)
