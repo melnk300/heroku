@@ -1,5 +1,6 @@
 import datetime as dt
 import os
+from flask_jwt_extended import JWTManager
 
 from flask import Flask
 
@@ -10,9 +11,11 @@ from api import groups_api
 from api import tasks_api
 
 app = Flask(__name__)
-app.debug = True
-app.config['JWT_SECRET_KEY'] = os.environ.get('SECRET')
+app.config['JWT_SECRET_KEY'] = CONFIG.JWT_SECRET
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = dt.timedelta(days=1)
+jwt = JWTManager(app)
+app.debug = True
+
 
 
 if __name__ == "__main__":

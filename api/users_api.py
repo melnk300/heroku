@@ -1,4 +1,6 @@
 from flask import jsonify, abort, request, Blueprint
+from flask_jwt_extended import create_access_token, JWTManager, get_jwt_identity, jwt_required
+
 
 from pprint import pprint
 
@@ -54,7 +56,8 @@ def users_by_group(group_id):
     users = sess.query(User.id, User.login, Group.name).filter(User.group_id == group_id).join(Group,
                                                                                                Group.id == group_id).all()
     print(users)
-    users = [{'id': user[0], 'name': user[1], 'group_name': user[2]} for user in users]
+    users = [{'id': user[0], 'name': user[1], 'group_name': user[2]}
+             for user in users]
     return jsonify({'users': users}), 200
 
 
@@ -88,8 +91,17 @@ def login_user():
     req = request.get_json(force=True)
     if_user_not_found_by_name(req['login'])
     sess = db_session.create_session()
-    user = sess.query(User.id, User.password).filter(User.login == req['login']).all()[0]
+    user = sess.query(User.id, User.password).filter(
+        User.login == req['login']).all()[0]
+    access_token = create_access_token(identity=user[0])
     if check_password(req['password'], user[1]):
-        return jsonify({'id': user[0]}), 200
+        return jsonify(access_token=access_token), 200
     else:
         abort(401, 'Password - login pair is incorrect')
+
+
+@blueprint.route('/api/user/test', methods=['GET'])
+@jwt_required()
+def test():
+    current_user = get_jwt_identity()
+    return jsonify(logged_in_as=current_user), 200
