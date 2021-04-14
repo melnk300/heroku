@@ -35,6 +35,6 @@ def register_group(group_name):
     )
     sess.add(group)
     sess.commit()
-    created_group_id = sess.query(Group.id).filter(Group.name == group_name).first()
+    created_group_id = sess.query(Group.id).filter(Group.name == group_name).first()[0]
     return jsonify({'success': 'OK', "group_id": created_group_id}), 200
 
