@@ -1,8 +1,10 @@
 import sqlalchemy
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.schema import ForeignKey
+from flask import abort
 
 from data.db_session import SqlAlchemyBase
+from data import db_session
 
 
 class User(SqlAlchemyBase, SerializerMixin):  # название модели
@@ -20,20 +22,17 @@ class User(SqlAlchemyBase, SerializerMixin):  # название модели
         if not user:
             abort(404, 'User id not found')
 
-
     def if_user_not_found_by_name(user_name):
         sess = db_session.create_session()
         user = sess.query(User).filter(User.login == user_name).all()
         if not user:
             abort(404, 'User name not found')
 
-
     def if_user_not_found_by_group(user_group_id):
         sess = db_session.create_session()
         user = sess.query(User).filter(User.group_id == user_group_id).all()
         if not user:
             abort(404, 'User with this group_id name not found')
-
 
     def if_user_already_created(user_name):
         sess = db_session.create_session()

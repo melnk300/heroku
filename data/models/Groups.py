@@ -3,6 +3,7 @@ from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.schema import ForeignKey
 
 from data.db_session import SqlAlchemyBase
+from data import db_session
 
 
 class Group(SqlAlchemyBase, SerializerMixin):  # название модели

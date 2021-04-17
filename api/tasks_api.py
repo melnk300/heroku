@@ -1,4 +1,5 @@
 from flask import jsonify, request, Blueprint, abort
+from flask_jwt_extended import jwt_required
 
 from data import db_session
 from data.models.Tasks import Task
@@ -14,14 +15,16 @@ def if_task_id_not_found(id):
 
 
 @blueprint.route('/api/tasks/<group_id>/<data>', methods=['GET'])
+@jwt_required()
 def get_tasks_by_group(group_id, data):
     sess = db_session.create_session()
-    res = sess.query(Task.id, Task.author, Task.subject, Task.task).filter(Task.data == data,
+    res = sess.query(Task.id, Task.author, Task.subject, Task.task).filter(Task.date_task == data,
                                                                            Task.group_id == group_id).all()
-    return jsonify({'tasks': [task.to_dict() for task in res]})
+    return jsonify({'tasks': res})
 
 
 @blueprint.route('/api/tasks/<group_id>/<data>', methods=['POST'])
+@jwt_required()
 def add_tasks_by_group(data, group_id):
     req = request.get_json(force=True)  # subject: 'русский', task: '№434', author: ...
     sess = db_session.create_session()
@@ -38,6 +41,7 @@ def add_tasks_by_group(data, group_id):
 
 
 @blueprint.route('/api/tasks/<id>', methods=['DELETE'])
+@jwt_required
 def delete_tasks_by_group(id):
     if_task_id_not_found(id)
     sess = db_session.create_session()
