@@ -1,4 +1,5 @@
 from flask import jsonify, abort, request, Blueprint
+from flask_cors import cross_origin
 from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token, create_refresh_token, \
     set_refresh_cookies, set_access_cookies, unset_jwt_cookies
 from pprint import pprint
@@ -31,7 +32,7 @@ def user_by_id(user_id):
     return jsonify({'id': user[0], 'login': user[1], 'group_id': user[2], 'group_name': user[3]}), 200
 
 
-@blueprint.route('/api/user/', methods=['POST'])
+@blueprint.route('/api/user/', methods=['PUT'])
 def register_user():
     req = request.get_json(force=True)
     User.if_user_already_created(req['login'])
@@ -48,7 +49,8 @@ def register_user():
     set_access_cookies(res, access_token)
     return res
 
-@blueprint.route('/api/user/', methods=['GET'])
+
+@blueprint.route('/api/user/', methods=['POST'])
 def login_user():
     req = request.get_json(force=True)
     User.if_user_not_found_by_name(req['login'])
