@@ -24,6 +24,10 @@ app.config['JWT_COOKIE_CSRF_PROTECT'] = False
 app.config['JWT_CSRF_CHECK_FORM'] = False
 app.debug = True
 
+@app.route('/')
+def index():
+    return 'hello'
+
 
 @app.after_request
 def refresh_expiring_jwts(response):
