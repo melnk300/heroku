@@ -40,8 +40,9 @@ def refresh_expiring_jwts(response):
         return response
 
 
+app.register_blueprint(users_api.blueprint)
+app.register_blueprint(groups_api.blueprint)
+app.register_blueprint(tasks_api.blueprint)
+
 if __name__ == "__main__":
-    app.register_blueprint(users_api.blueprint)
-    app.register_blueprint(groups_api.blueprint)
-    app.register_blueprint(tasks_api.blueprint)
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', port=8080)
