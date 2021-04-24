@@ -1,15 +1,19 @@
 from datetime import datetime as dt
 import datetime as dt_
 import os
+import logging
+
 from flask_jwt_extended import JWTManager, set_access_cookies, create_access_token, get_jwt_identity, get_jwt
 from flask_cors import CORS
-
 from flask import Flask
 from utils.cfg import CONFIG
 
 from api import users_api
 from api import groups_api
 from api import tasks_api
+
+logging.basicConfig(filename='log.log', level=logging.DEBUG,
+                    format=f'%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
 
 app = Flask(__name__)
 cors = CORS(app, supports_credentials=True, resource=r'/*')

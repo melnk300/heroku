@@ -14,7 +14,7 @@ blueprint = Blueprint('users_api', __name__)
 
 
 @blueprint.route('/api/users/<group_id>', methods=['GET'])
-def users_by_group(group_id):
+def users_by_group_id(group_id):
     User.if_user_not_found_by_group(group_id)
     sess = db_session.create_session()
     users = sess.query(User.id, User.login, Group.name).filter(User.group_id == group_id).join(Group,
@@ -70,3 +70,11 @@ def logout_user():
     res = jsonify({"msg": "logout successful"})
     unset_jwt_cookies(res)
     return res
+
+
+# @blueprint.route('/api/user/test_cookie', methods=['GET', 'POST'])
+# @jwt_required()
+# def cookie_test():
+#     jwt = get_jwt_identity()
+#     print(jwt)
+#     return str(jwt)
