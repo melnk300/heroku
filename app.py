@@ -24,10 +24,6 @@ app.config['JWT_COOKIE_CSRF_PROTECT'] = False
 app.config['JWT_CSRF_CHECK_FORM'] = False
 app.debug = True
 
-@app.route('/')
-def index():
-    return 'hello'
-
 
 @app.after_request
 def refresh_expiring_jwts(response):
@@ -44,8 +40,9 @@ def refresh_expiring_jwts(response):
         return response
 
 
+app.register_blueprint(users_api.blueprint)
+app.register_blueprint(groups_api.blueprint)
+app.register_blueprint(tasks_api.blueprint)
+
 if __name__ == "__main__":
-    app.register_blueprint(users_api.blueprint)
-    app.register_blueprint(groups_api.blueprint)
-    app.register_blueprint(tasks_api.blueprint)
     app.run(host='0.0.0.0', port=8080)
