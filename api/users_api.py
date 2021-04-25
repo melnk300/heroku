@@ -72,9 +72,6 @@ def logout_user():
     return res
 
 
-# @blueprint.route('/api/user/test_cookie', methods=['GET', 'POST'])
-# @jwt_required()
-# def cookie_test():
-#     jwt = get_jwt_identity()
-#     print(jwt)
-#     return str(jwt)
+@blueprint.route('/api/user/test', methods=['GET', 'POST'])
+def ping_test():
+    return 'Hello world'
