@@ -7,7 +7,6 @@ httplib2==0.14.0
 Jinja2==2.11.3
 pbr==5.5.1
 pexpect==4.6.0
-Pillow==7.0.0
 psycopg2-binary==2.8.6
 PyJWT==2.0.1
 requests==2.22.0
