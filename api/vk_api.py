@@ -16,4 +16,4 @@ blueprint = Blueprint('vk_api', __name__)
 
 @blueprint.route('/api/vk/callbackreg', methods=['POST'])
 def callback_reg():
-    return 'ecae930f'
+    return 'bcc0e9d7'
