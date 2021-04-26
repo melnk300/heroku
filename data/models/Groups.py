@@ -23,6 +23,18 @@ class Group(SqlAlchemyBase, SerializerMixin):  # название модели
         if not group:
             abort(404, 'Group id not found')
 
+    def if_group_not_found_by_name(group_name):
+        sess = db_session.create_session()
+        group = sess.query(Group).filter(Group.name == group_name).first()
+        if not group:
+            abort(404, 'Group name not found')
+
+    def if_user_is_not_admin(group_name, admin_id):
+        sess = db_session.create_session()
+        Group.if_group_not_found_by_name(group_name)
+        if not admin_id == sess.query(Group.admin).filter(Group.name == group_name).first()[0]:
+            abort(403, 'You\'re not an admin')
+
     def if_group_already_created(group_name):
         sess = db_session.create_session()
         group = sess.query(Group.id).filter(Group.name == group_name).first()

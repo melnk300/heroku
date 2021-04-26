@@ -11,6 +11,7 @@ from utils.cfg import CONFIG
 from api import users_api
 from api import groups_api
 from api import tasks_api
+from api import vk_api
 
 logging.basicConfig(filename='log.log', level=logging.DEBUG,
                     format=f'%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
@@ -43,6 +44,7 @@ def refresh_expiring_jwts(response):
 app.register_blueprint(users_api.blueprint)
 app.register_blueprint(groups_api.blueprint)
 app.register_blueprint(tasks_api.blueprint)
+app.register_blueprint(vk_api.blueprint)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8080)

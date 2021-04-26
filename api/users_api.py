@@ -66,6 +66,7 @@ def login_user():
 
 
 @blueprint.route('/api/user/', methods=['DELETE'])
+@jwt_required()
 def logout_user():
     res = jsonify({"msg": "logout successful"})
     unset_jwt_cookies(res)
