@@ -8,6 +8,7 @@ from pprint import pprint
 from utils.cfg import CONFIG
 from pickle import load
 import json
+from  pprint import pprint
 
 from utils.utils import hash_password, check_password
 
@@ -22,13 +23,15 @@ blueprint = Blueprint('vk_api', __name__)
 def callback_reg():
     print(request.data)
     data = json.loads(request.data)
+    pprint(data)
     token = CONFIG.VK_TOCKEN
     if 'type' not in data.keys():
         return 'not vk'
     elif data['type'] == 'message_new':
         session = vk.Session()
         api = vk.API(session, v='5.110')
-        user_id = data['object']['message']['from_id']
-        api.messages.send(access_token=token, user_id=str(user_id), message='Привет, я новый бот!',
+        user_id = data['object']['user_id']
+        text = data['object']['body']
+        api.messages.send(access_token=token, user_id=str(user_id), message=text,
                           random_id=random.getrandbits(64))
         return 'ok'
