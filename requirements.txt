@@ -48,3 +48,4 @@ urllib3==1.25.8
 wadllib==1.3.3
 Werkzeug==1.0.1
 vkapi
+vk
