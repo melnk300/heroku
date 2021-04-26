@@ -7,6 +7,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_tok
 from pprint import pprint
 from utils.cfg import CONFIG
 from pickle import load
+import json
 
 from utils.utils import hash_password, check_password
 
@@ -20,7 +21,7 @@ blueprint = Blueprint('vk_api', __name__)
 @blueprint.route('/api/vk/callbackreg', methods=['POST'])
 def callback_reg():
     print(request.data)
-    data = load(request.data)
+    data = json.loads(request.data)
     token = CONFIG.VK_TOCKEN
     if 'type' not in data.keys():
         return 'not vk'
