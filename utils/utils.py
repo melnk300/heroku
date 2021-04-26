@@ -1,5 +1,5 @@
 import random
-from cfg import CONFIG
+from utils.cfg import CONFIG
 import bcrypt
 import vk
 
