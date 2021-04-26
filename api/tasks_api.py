@@ -27,7 +27,7 @@ def add_tasks_by_group(data, group_id):
     task = Task(
         group_id=group_id,
         date_task=data,
-        author=req['author'],
+        author=user_id,
         subject=req['subject'],
         task=req['task']
     )

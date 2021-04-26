@@ -29,4 +29,3 @@ class TestConfig(Config):
 
 
 CONFIG = DevConfig()
-# This is comment
