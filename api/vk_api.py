@@ -1,37 +1,43 @@
 import random
 from flask import jsonify, abort, request, Blueprint
 import vk
-from flask_cors import cross_origin
-from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token, create_refresh_token, \
-    set_refresh_cookies, set_access_cookies, unset_jwt_cookies
 from pprint import pprint
 from utils.cfg import CONFIG
-from pickle import load
 import json
-from  pprint import pprint
+from pprint import pprint
 
-from utils.utils import hash_password, check_password
+from utils.utils import hash_password, check_password, send_message
 
 from data import db_session
 from data.models.Users import User
 from data.models.Groups import Group
+from data.models.VkUsers import VkUser
 
 blueprint = Blueprint('vk_api', __name__)
 
 
 @blueprint.route('/api/vk/callbackreg', methods=['POST'])
 def callback_reg():
-    print(request.data)
     data = json.loads(request.data)
-    pprint(data)
     token = CONFIG.VK_TOCKEN
     if 'type' not in data.keys():
         return 'not vk'
     elif data['type'] == 'message_new':
-        session = vk.Session()
-        api = vk.API(session, v='5.110')
         user_id = data['object']['user_id']
-        text = data['object']['body']
-        api.messages.send(access_token=token, user_id=str(user_id), message=text,
-                          random_id=random.getrandbits(64))
+        text = data['object']['body'].split()
+        if text[0] in ["!группа", "!гр"]:
+            sess = db_session.create_session()
+            if Group.if_group_already_created('_'.join(text[1::])):
+                group_id = sess.query(Group.id).filter(Group.name == '_'.join(text[1::])).first()[0]
+                user_group = VkUser(
+                    id=user_id,
+                    group_id=group_id
+                )
+                sess.add(user_group)
+                send_message(user_id, 'Вы добавлены в группу')
+            else:
+                send_message(user_id, 'Такой группы не существует')
+    else:
         return 'ok'
+
+

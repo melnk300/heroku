@@ -23,6 +23,24 @@ class Group(SqlAlchemyBase, SerializerMixin):  # название модели
         if not group:
             abort(404, 'Group id not found')
 
+    def if_group_not_found__vk(group_id):
+        sess = db_session.create_session()
+        group = sess.query(Group).get(group_id)
+        if not group:
+            return True
+
+    def if_group_not_found_by_name__vk(group_name):
+        sess = db_session.create_session()
+        group = sess.query(Group).filter(Group.name == group_name).first()
+        if not group:
+            return True
+
+    def if_group_already_created__vk(group_name):
+        sess = db_session.create_session()
+        group = sess.query(Group.id).filter(Group.name == group_name).first()
+        if group:
+            return True
+
     def if_group_not_found_by_name(group_name):
         sess = db_session.create_session()
         group = sess.query(Group).filter(Group.name == group_name).first()

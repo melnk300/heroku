@@ -1,4 +1,9 @@
+import random
+from cfg import CONFIG
 import bcrypt
+import vk
+
+token = CONFIG.VK_TOCKEN
 
 
 def hash_password(password):
@@ -9,24 +14,8 @@ def check_password(password, hash):
     return bcrypt.checkpw(password.encode(), hash.encode())
 
 
-class AbstractCommand:
-    def __init__(self, keys):
-        self.__keys = []
-        self.description = ''
-
-    @property
-    def keys(self):
-        return self.__keys
-
-    @keys.setter
-    def keys(self, mas):
-        for k in mas:
-            self.__keys.append(k.lower())
-
-    def work(self):
-        pass
-
-
-class RegistrationCommand(AbstractCommand):
-    def __init__(self):
-        self.__keys = ['!рег', '!регистрация']
+def send_message(user_id, text):
+    session = vk.Session()
+    api = vk.API(session, v='5.110')
+    api.messages.send(access_token=token, user_id=str(user_id), message=text,
+                      random_id=random.getrandbits(64))
