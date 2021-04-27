@@ -34,6 +34,7 @@ def callback_reg():
                     group_id = sess.query(Group.id).filter(Group.name == '_'.join(text[1::])).first()[0]
                     user_group = VkUser(
                         id=user_id,
+                        user_name=text[-1],
                         group_id=group_id
                     )
                     sess.add(user_group)
@@ -62,7 +63,9 @@ def callback_reg():
                 return 'ok'
         elif text[0] in ['!задание']:
             sess = db_session.create_session()
+            task = Task(
 
+            )
     else:
         return 'ok'
 

@@ -12,4 +12,5 @@ class VkUser(SqlAlchemyBase, SerializerMixin):  # название модели
     __tablename__ = 'vk_users'  # Название таблицы
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
+    user_name = sqlalchemy.Column(sqlalchemy.Text)
     group_id = sqlalchemy.Column(sqlalchemy.Integer)
