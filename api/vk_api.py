@@ -35,8 +35,10 @@ def callback_reg():
                 )
                 sess.add(user_group)
                 send_message(user_id, 'Вы добавлены в группу')
+                return '200'
             else:
                 send_message(user_id, 'Такой группы не существует')
+                return '404'
     else:
         return 'ok'
 
