@@ -56,10 +56,10 @@ def login_user():
     req = request.get_json(force=True)
     User.if_user_not_found_by_name(req['login'])
     sess = db_session.create_session()
-    user_id, user_password = sess.query(User.id, User.password).filter(User.login == req['login']).all()[0]
+    user_id, user_password, group_id = sess.query(User.id, User.password, User.group_id).filter(User.login == req['login']).all()[0]
     if check_password(req['password'], user_password):
         access_token = create_access_token(identity=user_id)
-        res = jsonify({'success': 'OK'})
+        res = jsonify({'success': 'OK', 'group_id': group_id})
         set_access_cookies(res, access_token)
         return res
     else:
