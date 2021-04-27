@@ -38,10 +38,10 @@ def callback_reg():
                 sess.add(user_group)
                 sess.commit()
                 send_message(user_id, 'Вы добавлены в группу')
-                return '200'
+                return 'ok'
             else:
                 send_message(user_id, 'Такой группы не существует')
-                return '404'
+                return 'ok'
         elif text[0] in ["!дз"]:
             sess = db_session.create_session()
             if len(text) == 1:
@@ -50,8 +50,15 @@ def callback_reg():
                 date = text[1]
             user_group_id = sess.query(VkUser.group_id).filter(VkUser.id == user_id).first()[0]
             tasks = sess.query(Task.subject, Task.author, Task.task).filter(Task.group_id == user_group_id, Task.date_task == date)
-            send_message(user_id, '\n'.join([f'{task[0]} @{task[1]}\n{task[2]}' for task in tasks]))
-            return '200'
+            if tasks:
+                send_message(user_id, '\n'.join([f'{task[0]} @{task[1]}\n{task[2]}\n' for task in tasks]))
+                return 'ok'
+            else:
+                send_message(user_id, 'Заданий нет')
+                return 'ok'
+        elif text[0] in ['!задание']:
+            sess = db_session.create_session()
+
     else:
         return 'ok'
 
