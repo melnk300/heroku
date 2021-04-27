@@ -43,7 +43,7 @@ def callback_reg():
                 return '404'
         elif text[0] in ["!дз"]:
             sess = db_session.create_session()
-            if not text[1]:
+            if not len(text) == 1:
                 date = dt.now().strftime('%Y-%m-%d')
             else:
                 date = text[1]
