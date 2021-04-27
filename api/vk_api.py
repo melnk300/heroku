@@ -29,18 +29,22 @@ def callback_reg():
         text = data['object']['body'].split()
         if text[0] in ["!группа", "!гр"]:
             sess = db_session.create_session()
-            if Group.if_group_already_created__vk('_'.join(text[1::])):
-                group_id = sess.query(Group.id).filter(Group.name == '_'.join(text[1::])).first()[0]
-                user_group = VkUser(
-                    id=user_id,
-                    group_id=group_id
-                )
-                sess.add(user_group)
-                sess.commit()
-                send_message(user_id, 'Вы добавлены в группу')
-                return 'ok'
+            if not sess.query(VkUser.id).filter(VkUser.id == user_id).first():
+                if Group.if_group_already_created__vk('_'.join(text[1::])):
+                    group_id = sess.query(Group.id).filter(Group.name == '_'.join(text[1::])).first()[0]
+                    user_group = VkUser(
+                        id=user_id,
+                        group_id=group_id
+                    )
+                    sess.add(user_group)
+                    sess.commit()
+                    send_message(user_id, 'Вы добавлены в группу')
+                    return 'ok'
+                else:
+                    send_message(user_id, 'Такой группы не существует')
+                    return 'ok'
             else:
-                send_message(user_id, 'Такой группы не существует')
+                send_message(user_id, 'Вы уже добавлены в группу')
                 return 'ok'
         elif text[0] in ["!дз"]:
             sess = db_session.create_session()
