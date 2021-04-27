@@ -47,7 +47,7 @@ def callback_reg():
                 date = dt.now().strftime('%Y-%m-%d')
             else:
                 date = text[1]
-            user_group_id = sess.query(VkUser.group_id).filter(VkUser.id == user_id).all()
+            user_group_id = sess.query(VkUser.group_id).filter(VkUser.id == user_id).first()[0]
             tasks = sess.query(Task.subject, Task.author, Task.task).filter(Task.group_id == user_group_id, Task.date_task == date)
             send_message(user_id, '\n'.join([f'{task[0]} @{task[1]}\n{task[2]}' for task in tasks]))
             return '200'
