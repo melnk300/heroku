@@ -36,6 +36,7 @@ def callback_reg():
                     group_id=group_id
                 )
                 sess.add(user_group)
+                sess.commit()
                 send_message(user_id, 'Вы добавлены в группу')
                 return '200'
             else:
