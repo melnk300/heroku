@@ -61,11 +61,23 @@ def callback_reg():
             else:
                 send_message(user_id, 'Заданий нет')
                 return 'ok'
-        elif text[0] in ['!задание']:
+        elif text[0] in ['!задание']:  # TODO: need research and DB-refactor
             sess = db_session.create_session()
+            author, group_id = sess.query(VkUser.user_name, VkUser.group_id).filter(VkUser.id == user_id).first()
             task = Task(
-
+                date_task=text[1],
+                subject=' '.join(text[2].split('_')),
+                task=' '.join(text[2::]),
+                author=author,
+                group_id=group_id
             )
+            sess.add(task)
+            sess.commit()
+            send_message(user_id, 'Задание добавлено')
+            return 'ok'
+        elif text[0] in ['!help', '!помощь', '!команды']:
+            send_message(user_id, '!гр <группа> <ваще имя> - привязывает ваш профиль к группе\n!дз <date> - показывает задание на заданную дату (либо не сегодня если не задана)\n')
+            return 'ok'
     else:
         return 'ok'
 
