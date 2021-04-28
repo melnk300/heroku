@@ -56,7 +56,7 @@ def login_user():
     req = request.get_json(force=True)
     User.if_user_not_found_by_name(req['login'])
     sess = db_session.create_session()
-    user_id, user_password, group_id = sess.query(User.id, User.password, User.group_id).filter(User.login == req['login']).fisrt()
+    user_id, user_password, group_id = sess.query(User.id, User.password, User.group_id).filter(User.login == req['login']).first()
     group_name = sess.query(Group.name).filter(Group.id == group_id).first()[0]
     if check_password(req['password'], user_password):
         access_token = create_access_token(identity=user_id)
